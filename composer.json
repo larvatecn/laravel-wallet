@@ -1,0 +1,29 @@
+{
+  "name": "larva/laravel-wallet",
+  "description": "This is a wallet.",
+  "keywords": [ "laravel", "wallet", "larva" ],
+  "type": "library",
+  "license": "MIT",
+  "require": {
+    "ext-bcmath": "*",
+    "illuminate/support": "^6.0 || ^7.0 || ^8.0",
+    "illuminate/notifications": "^6.0 || ^7.0 || ^8.0",
+    "larva/laravel-transaction": "^1.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Larva\\Wallet\\": "src"
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.2-dev"
+    },
+    "laravel": {
+      "providers": [
+        "Larva\\Wallet\\WalletServiceProvider"
+      ]
+    }
+  },
+  "prefer-stable": true
+}
