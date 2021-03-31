@@ -1,6 +1,6 @@
 # laravel-wallet
 
-Laravel 余额
+Wallet Extension for Laravel. Laravel 余额钱包
 
 ## 环境需求
 
@@ -24,16 +24,3 @@ This service provider must be registered.
     Larva\Wallet\WalletServiceProvider::class,
 ];
 ```
-
-## Config
-```php
-add services.php
-'wallet'=>[
-    'withdrawals_mix' => 100,//最小提现数
-],
-```
-
-
-
-
-

@@ -1,6 +1,6 @@
 {
   "name": "larva/laravel-wallet",
-  "description": "This is a wallet.",
+  "description": "Wallet Extension for Laravel.",
   "keywords": [ "laravel", "wallet", "larva" ],
   "type": "library",
   "license": "MIT",
