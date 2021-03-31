@@ -111,19 +111,6 @@ class Wallet extends Model
     }
 
     /**
-     * 创建充值请求
-     * @param string $channel 渠道
-     * @param int $amount 金额 单位分
-     * @param string $type 支付类型
-     * @param string $clientIP 客户端IP
-     * @return Model|Recharge
-     */
-    public function recharge($channel, $amount, $type, $clientIP = null)
-    {
-        return $this->recharges()->create(['channel' => $channel, 'amount' => $amount, 'type' => $type, 'client_ip' => $clientIP]);
-    }
-
-    /**
      * 钱包交易明细
      * @return \Illuminate\Database\Eloquent\Relations\hasMany
      */
@@ -142,6 +129,19 @@ class Wallet extends Model
     }
 
     /**
+     * 创建充值请求
+     * @param string $channel 渠道
+     * @param int $amount 金额 单位分
+     * @param string $type 支付类型
+     * @param string $clientIP 客户端IP
+     * @return Model|Recharge
+     */
+    public function rechargeAction($channel, $amount, $type, $clientIP = null)
+    {
+        return $this->recharges()->create(['channel' => $channel, 'amount' => $amount, 'type' => $type, 'client_ip' => $clientIP]);
+    }
+
+    /**
      * 创建提现请求
      * @param int $amount
      * @param string $channel
@@ -151,7 +151,7 @@ class Wallet extends Model
      * @return Model|Withdrawals
      * @throws WalletException
      */
-    public function withdrawal($amount, $channel, $recipient, $metaData = [], $clientIP = null)
+    public function withdrawalsAction($amount, $channel, $recipient, $metaData = [], $clientIP = null)
     {
         $availableAmount = bcsub($this->available_amount, $amount);
         if ($availableAmount < 0) {//计算后如果余额小于0，那么结果不合法。
