@@ -43,7 +43,7 @@ class WalletServiceProvider  extends ServiceProvider
         // Observers
         \Larva\Wallet\Models\Recharge::observe(\Larva\Wallet\Observers\RechargeObserver::class);
         \Larva\Wallet\Models\Transaction::observe(\Larva\Wallet\Observers\TransactionObserver::class);
-        \Larva\Wallet\Models\Withdrawal::observe(\Larva\Wallet\Observers\WithdrawalObserver::class);
+        \Larva\Wallet\Models\Withdrawals::observe(\Larva\Wallet\Observers\WithdrawalsObserver::class);
     }
 
     /**

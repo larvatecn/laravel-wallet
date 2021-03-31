@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateWalletWithdrawalAccountsTable extends Migration
+class CreateWalletWithdrawalsAccountsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateWalletWithdrawalAccountsTable extends Migration
      */
     public function up()
     {
-        Schema::create('wallet_withdrawal_accounts', function (Blueprint $table) {
+        Schema::create('wallet_withdrawals_accounts', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('user_id')->nullable()->index()->comment('用户ID');
             $table->string('channel');
@@ -30,6 +30,6 @@ class CreateWalletWithdrawalAccountsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('wallet_withdrawal_accounts');
+        Schema::dropIfExists('wallet_withdrawals_accounts');
     }
 }

@@ -21,7 +21,7 @@ use Larva\Wallet\Exceptions\WalletException;
  * @property \Illuminate\Foundation\Auth\User $user
  * @property Recharge[] $recharges 钱包充值记录
  * @property Transaction[] $transactions 钱包交易记录
- * @property Withdrawal[] $withdrawals 钱包提现记录
+ * @property Withdrawals[] $withdrawals 钱包提现记录
  *
  * @method static \Illuminate\Database\Eloquent\Builder|Wallet userId($user_id)
  */
@@ -138,7 +138,7 @@ class Wallet extends Model
      */
     public function withdrawals()
     {
-        return $this->hasMany(Withdrawal::class, 'user_id', 'user_id');
+        return $this->hasMany(Withdrawals::class, 'user_id', 'user_id');
     }
 
     /**
@@ -148,7 +148,7 @@ class Wallet extends Model
      * @param string $recipient 收款账户
      * @param array $metaData 附加信息
      * @param string $clientIP 客户端IP
-     * @return Model|Withdrawal
+     * @return Model|Withdrawals
      * @throws WalletException
      */
     public function withdrawal($amount, $channel, $recipient, $metaData = [], $clientIP = null)
@@ -160,7 +160,7 @@ class Wallet extends Model
         return $this->withdrawals()->create([
             'amount' => $amount,
             'channel' => $channel,
-            'status' => Withdrawal::STATUS_PENDING,
+            'status' => Withdrawals::STATUS_PENDING,
             'recipient' => $recipient,
             'metadata' => $metaData,
             'client_ip' => $clientIP,

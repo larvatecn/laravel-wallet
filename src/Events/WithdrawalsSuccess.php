@@ -9,28 +9,28 @@
 namespace Larva\Wallet\Events;
 
 use Illuminate\Queue\SerializesModels;
-use Larva\Wallet\Models\Withdrawal;
+use Larva\Wallet\Models\Withdrawals;
 
 /**
- * 提现失败事件
+ * 提现成功事件
  *
  * @author Tongle Xu <xutongle@gmail.com>
  */
-class WithdrawalFailure
+class WithdrawalsSuccess
 {
     use SerializesModels;
 
     /**
-     * @var Withdrawal
+     * @var Withdrawals
      */
-    public $withdrawal;
+    public $withdrawals;
 
     /**
      * RefundFailure constructor.
-     * @param Withdrawal $withdrawal
+     * @param Withdrawals $withdrawals
      */
-    public function __construct(Withdrawal $withdrawal)
+    public function __construct(Withdrawals $withdrawals)
     {
-        $this->withdrawal = $withdrawal;
+        $this->withdrawals = $withdrawals;
     }
 }

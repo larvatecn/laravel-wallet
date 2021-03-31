@@ -32,7 +32,7 @@ use Larva\Transaction\Models\Transfer;
  *
  * @author Tongle Xu <xutongle@gmail.com>
  */
-class Withdrawal extends Model
+class Withdrawals extends Model
 {
     /**
      * 与模型关联的数据表。
@@ -157,7 +157,7 @@ class Withdrawal extends Model
     public function setSucceeded()
     {
         $this->update(['status' => static::STATUS_SUCCEEDED, 'succeeded_at' => $this->freshTimestamp()]);
-        event(new \Larva\Wallet\Events\WithdrawalSuccess($this));
+        event(new \Larva\Wallet\Events\WithdrawalsSuccess($this));
     }
 
     /**
@@ -174,7 +174,7 @@ class Withdrawal extends Model
             'available_amount' => bcadd($this->wallet->available_amount, $this->amount)
         ]);
         $this->update(['status' => static::STATUS_CANCELED, 'canceled_at' => $this->freshTimestamp()]);
-        event(new \Larva\Wallet\Events\WithdrawalCanceled($this));
+        event(new \Larva\Wallet\Events\WithdrawalsCanceled($this));
         return true;
     }
 
@@ -192,7 +192,7 @@ class Withdrawal extends Model
             'available_amount' => bcadd($this->wallet->available_amount, $this->amount)
         ]);
         $this->update(['status' => static::STATUS_FAILED, 'canceled_at' => $this->freshTimestamp()]);
-        event(new \Larva\Wallet\Events\WithdrawalFailure($this));
+        event(new \Larva\Wallet\Events\WithdrawalsFailure($this));
         return true;
     }
 

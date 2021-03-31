@@ -9,7 +9,7 @@
 namespace Larva\Wallet\Listeners;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Larva\Wallet\Models\Withdrawal;
+use Larva\Wallet\Models\Withdrawals;
 use Larva\Transaction\Events\TransferShipped;
 
 /**
@@ -37,7 +37,7 @@ class TransferShippedListener implements ShouldQueue
      */
     public function handle(TransferShipped $event)
     {
-        if ($event->transfer->order instanceof Withdrawal) {
+        if ($event->transfer->order instanceof Withdrawals) {
             $event->transfer->order->setSucceeded();
         }
     }
