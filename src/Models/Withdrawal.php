@@ -9,6 +9,7 @@
 namespace Larva\Wallet\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 use Larva\Transaction\Models\Transfer;
 
 /**
@@ -22,9 +23,9 @@ use Larva\Transaction\Models\Transfer;
  * @property string $client_ip 客户端IP
  * @property array $metadata
  * @property-read array $extra 提现附加参数
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $canceled_at
- * @property \Illuminate\Support\Carbon|null $succeeded_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $canceled_at
+ * @property Carbon|null $succeeded_at
  *
  * @property \Illuminate\Foundation\Auth\User $user
  * @property Wallet $wallet
