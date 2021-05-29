@@ -7,8 +7,15 @@
 
 namespace Larva\Wallet\Models;
 
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Event;
 use Larva\Transaction\Models\Charge;
+use Larva\Wallet\Events\RechargeFailure;
+use Larva\Wallet\Events\RechargeShipped;
 
 /**
  * 钱包充值明细
@@ -20,9 +27,9 @@ use Larva\Transaction\Models\Charge;
  * @property string $type
  * @property string $status
  * @property string $client_ip
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \Illuminate\Support\Carbon|null $succeeded_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property Carbon|null $succeeded_at
  *
  * @property Charge $charge
  * @property \Illuminate\Foundation\Auth\User $user
@@ -77,18 +84,18 @@ class Recharge extends Model
     /**
      * 为数组 / JSON 序列化准备日期。
      *
-     * @param \DateTimeInterface $date
+     * @param DateTimeInterface $date
      * @return string
      */
-    protected function serializeDate(\DateTimeInterface $date)
+    protected function serializeDate(DateTimeInterface $date): string
     {
         return $date->format($this->dateFormat ?: 'Y-m-d H:i:s');
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function wallet()
+    public function wallet(): BelongsTo
     {
         return $this->belongsTo(Wallet::class, 'user_id', 'user_id');
     }
@@ -96,9 +103,9 @@ class Recharge extends Model
     /**
      * Get the user that the charge belongs to.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(
             config('auth.providers.' . config('auth.guards.web.provider') . '.model')
@@ -108,9 +115,9 @@ class Recharge extends Model
     /**
      * Get the entity's transaction.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphOne
+     * @return MorphOne
      */
-    public function transaction()
+    public function transaction(): MorphOne
     {
         return $this->morphOne(Transaction::class, 'source');
     }
@@ -118,9 +125,9 @@ class Recharge extends Model
     /**
      * Get the entity's charge.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphOne
+     * @return MorphOne
      */
-    public function charge()
+    public function charge(): MorphOne
     {
         return $this->morphOne(Charge::class, 'order');
     }
@@ -138,7 +145,7 @@ class Recharge extends Model
             'amount' => $this->amount,
             'available_amount' => bcadd($this->wallet->available_amount, $this->amount)
         ]);
-        event(new \Larva\Wallet\Events\RechargeShipped($this));
+        Event::dispatch(new RechargeShipped($this));
         $this->user->notify(new \Larva\Wallet\Notifications\RechargeSucceeded($this->user, $this));
     }
 
@@ -148,14 +155,14 @@ class Recharge extends Model
     public function setFailure()
     {
         $this->update(['status' => static::STATUS_FAILED]);
-        event(new \Larva\Wallet\Events\RechargeFailure($this));
+        Event::dispatch(new RechargeFailure($this));
     }
 
     /**
      * 状态
      * @return string[]
      */
-    public static function getStatusLabels()
+    public static function getStatusLabels(): array
     {
         return [
             static::STATUS_PENDING => '等待付款',
@@ -168,7 +175,7 @@ class Recharge extends Model
      * 获取状态Dot
      * @return string[]
      */
-    public static function getStatusDots()
+    public static function getStatusDots(): array
     {
         return [
             static::STATUS_PENDING => 'info',

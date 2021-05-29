@@ -7,22 +7,27 @@
 
 namespace Larva\Wallet\Models;
 
+use DateTimeInterface;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\hasMany;
+use Illuminate\Support\Carbon;
 use Larva\Wallet\Exceptions\WalletException;
 
 /**
  * 钱包
  * @property int $user_id
  * @property int $available_amount 可用金额
- * @property \Illuminate\Support\Carbon|null $created_at 钱包创建时间
- * @property \Illuminate\Support\Carbon|null $updated_at 钱包更新时间
+ * @property Carbon|null $created_at 钱包创建时间
+ * @property Carbon|null $updated_at 钱包更新时间
  *
  * @property \Illuminate\Foundation\Auth\User $user
  * @property Recharge[] $recharges 钱包充值记录
  * @property Transaction[] $transactions 钱包交易记录
  * @property Withdrawals[] $withdrawals 钱包提现记录
  *
- * @method static \Illuminate\Database\Eloquent\Builder|Wallet userId($user_id)
+ * @method static Builder|Wallet userId($user_id)
  */
 class Wallet extends Model
 {
@@ -71,19 +76,19 @@ class Wallet extends Model
     /**
      * 为数组 / JSON 序列化准备日期。
      *
-     * @param \DateTimeInterface $date
+     * @param DateTimeInterface $date
      * @return string
      */
-    protected function serializeDate(\DateTimeInterface $date)
+    protected function serializeDate(DateTimeInterface $date): string
     {
         return $date->format($this->dateFormat ?: 'Y-m-d H:i:s');
     }
 
     /**
      * 获取指定用户钱包
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param Builder $query
      * @param int $user_id
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @return Builder
      */
     public function scopeUserId($query, $user_id)
     {
@@ -93,36 +98,36 @@ class Wallet extends Model
     /**
      * Get the user that the charge belongs to.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(config('auth.providers.' . config('auth.guards.web.provider') . '.model'));
     }
 
     /**
      * 钱包充值明细
-     * @return \Illuminate\Database\Eloquent\Relations\hasMany
+     * @return hasMany
      */
-    public function recharges()
+    public function recharges(): hasMany
     {
         return $this->hasMany(Recharge::class, 'user_id', 'user_id');
     }
 
     /**
      * 钱包交易明细
-     * @return \Illuminate\Database\Eloquent\Relations\hasMany
+     * @return hasMany
      */
-    public function transactions()
+    public function transactions(): hasMany
     {
         return $this->hasMany(Transaction::class, 'user_id', 'user_id');
     }
 
     /**
      * 钱包提现明细
-     * @return \Illuminate\Database\Eloquent\Relations\hasMany
+     * @return hasMany
      */
-    public function withdrawals()
+    public function withdrawals(): hasMany
     {
         return $this->hasMany(Withdrawals::class, 'user_id', 'user_id');
     }
@@ -135,7 +140,7 @@ class Wallet extends Model
      * @param string $clientIP 客户端IP
      * @return Model|Recharge
      */
-    public function rechargeAction($channel, $amount, $type, $clientIP = null)
+    public function rechargeAction(string $channel, $amount, $type, $clientIP = null)
     {
         return $this->recharges()->create(['channel' => $channel, 'amount' => $amount, 'type' => $type, 'client_ip' => $clientIP]);
     }

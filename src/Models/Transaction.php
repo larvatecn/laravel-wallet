@@ -7,7 +7,10 @@
 
 namespace Larva\Wallet\Models;
 
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * 钱包交易明细
@@ -21,7 +24,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read string $typeName
  * @property string $client_ip
  * @property \Illuminate\Foundation\Auth\User $user
- * @property \Illuminate\Support\Carbon|null $created_at
+ * @property Carbon|null $created_at
  * @property Wallet $wallet
  *
  * @author Tongle Xu <xutongle@gmail.com>
@@ -71,10 +74,10 @@ class Transaction extends Model
     /**
      * 为数组 / JSON 序列化准备日期。
      *
-     * @param \DateTimeInterface $date
+     * @param DateTimeInterface $date
      * @return string
      */
-    protected function serializeDate(\DateTimeInterface $date)
+    protected function serializeDate(DateTimeInterface $date): string
     {
         return $date->format($this->dateFormat ?: 'Y-m-d H:i:s');
     }
@@ -102,9 +105,9 @@ class Transaction extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function wallet()
+    public function wallet(): BelongsTo
     {
         return $this->belongsTo(Wallet::class, 'user_id', 'user_id');
     }
@@ -113,7 +116,7 @@ class Transaction extends Model
      * 获取Type名称
      * @return string
      */
-    public function getTypeNameAttribute()
+    public function getTypeNameAttribute(): string
     {
         return trans('wallet.' . $this->type);
     }
@@ -129,9 +132,9 @@ class Transaction extends Model
     /**
      * Get the user that the charge belongs to.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(
             config('auth.providers.' . config('auth.guards.web.provider') . '.model')

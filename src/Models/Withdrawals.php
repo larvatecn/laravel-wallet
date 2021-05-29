@@ -7,9 +7,16 @@
 
 namespace Larva\Wallet\Models;
 
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\morphOne;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Event;
 use Larva\Transaction\Models\Transfer;
+use Larva\Wallet\Events\WithdrawalsCanceled;
+use Larva\Wallet\Events\WithdrawalsFailure;
+use Larva\Wallet\Events\WithdrawalsSuccess;
 
 /**
  * 钱包提现明细
@@ -86,10 +93,10 @@ class Withdrawals extends Model
     /**
      * 为数组 / JSON 序列化准备日期。
      *
-     * @param \DateTimeInterface $date
+     * @param DateTimeInterface $date
      * @return string
      */
-    protected function serializeDate(\DateTimeInterface $date)
+    protected function serializeDate(DateTimeInterface $date): string
     {
         return $date->format($this->dateFormat ?: 'Y-m-d H:i:s');
     }
@@ -98,7 +105,7 @@ class Withdrawals extends Model
      * 获取提现附加参数
      * @return array
      */
-    public function getExtraAttribute()
+    public function getExtraAttribute(): array
     {
         return [
             //微信
@@ -113,9 +120,9 @@ class Withdrawals extends Model
     /**
      * Get the user that the charge belongs to.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(
             config('auth.providers.' . config('auth.guards.web.provider') . '.model')
@@ -123,9 +130,9 @@ class Withdrawals extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function wallet()
+    public function wallet(): BelongsTo
     {
         return $this->belongsTo(Wallet::class, 'user_id', 'user_id');
     }
@@ -133,9 +140,9 @@ class Withdrawals extends Model
     /**
      * Get the entity's transaction.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\morphOne
+     * @return morphOne
      */
-    public function transaction()
+    public function transaction(): morphOne
     {
         return $this->morphOne(Transaction::class, 'source');
     }
@@ -143,9 +150,9 @@ class Withdrawals extends Model
     /**
      * Get the entity's transfer.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\morphOne
+     * @return morphOne
      */
-    public function transfer()
+    public function transfer(): morphOne
     {
         return $this->morphOne(Transfer::class, 'order');
     }
@@ -156,7 +163,7 @@ class Withdrawals extends Model
     public function setSucceeded()
     {
         $this->update(['status' => static::STATUS_SUCCEEDED, 'succeeded_at' => $this->freshTimestamp()]);
-        event(new \Larva\Wallet\Events\WithdrawalsSuccess($this));
+        Event::dispatch(new WithdrawalsSuccess($this));
     }
 
     /**
@@ -173,7 +180,7 @@ class Withdrawals extends Model
             'available_amount' => bcadd($this->wallet->available_amount, $this->amount)
         ]);
         $this->update(['status' => static::STATUS_CANCELED, 'canceled_at' => $this->freshTimestamp()]);
-        event(new \Larva\Wallet\Events\WithdrawalsCanceled($this));
+        Event::dispatch(new WithdrawalsCanceled($this));
         return true;
     }
 
@@ -191,7 +198,7 @@ class Withdrawals extends Model
             'available_amount' => bcadd($this->wallet->available_amount, $this->amount)
         ]);
         $this->update(['status' => static::STATUS_FAILED, 'canceled_at' => $this->freshTimestamp()]);
-        event(new \Larva\Wallet\Events\WithdrawalsFailure($this));
+        Event::dispatch(new WithdrawalsFailure($this));
         return true;
     }
 
@@ -199,7 +206,7 @@ class Withdrawals extends Model
      * 状态
      * @return string[]
      */
-    public static function getStatusLabels()
+    public static function getStatusLabels(): array
     {
         return [
             static::STATUS_PENDING => '等待处理',
@@ -213,7 +220,7 @@ class Withdrawals extends Model
      * 获取状态Dot
      * @return string[]
      */
-    public static function getStatusDots()
+    public static function getStatusDots(): array
     {
         return [
             static::STATUS_PENDING => 'info',

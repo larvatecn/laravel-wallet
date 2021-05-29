@@ -100,7 +100,7 @@ class WithdrawalsAccount extends Model
      * 获取提现账户
      * @return string
      */
-    public function getAccountAttribute()
+    public function getAccountAttribute(): string
     {
         return $this->recipient['account'] ?? '';
     }
@@ -109,16 +109,16 @@ class WithdrawalsAccount extends Model
      * 获取提现账户开户名
      * @return string
      */
-    public function getNameAttribute()
+    public function getNameAttribute(): string
     {
         return $this->recipient['name'] ?? '';
     }
 
     /**
      * 获取提现账户类型
-     * @return mixed|string
+     * @return string
      */
-    public function getTypeAttribute()
+    public function getTypeAttribute(): string
     {
         return $this->recipient['type'] ?? '';
     }
@@ -138,7 +138,7 @@ class WithdrawalsAccount extends Model
      * @param User $user
      * @return bool
      */
-    public function connect($user)
+    public function connect($user): bool
     {
         return $this->update(['user_id' => $user->id]);
     }
