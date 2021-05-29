@@ -5,6 +5,7 @@
   "type": "library",
   "license": "MIT",
   "require": {
+    "php": "^7.3|^8.0",
     "ext-bcmath": "*",
     "illuminate/support": "^6.0 || ^7.0 || ^8.0",
     "illuminate/notifications": "^6.0 || ^7.0 || ^8.0",
