@@ -5,6 +5,8 @@
  * @link http://www.larva.com.cn/
  */
 
+declare (strict_types = 1);
+
 namespace Larva\Wallet\Observers;
 
 use Larva\Wallet\Models\Recharge;
@@ -21,7 +23,6 @@ class RechargeObserver
      *
      * @param Recharge $recharge
      * @return void
-     * @throws \Yansongda\Pay\Exceptions\InvalidGatewayException
      */
     public function created(Recharge $recharge)
     {

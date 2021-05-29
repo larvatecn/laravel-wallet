@@ -5,6 +5,8 @@
  * @link http://www.larva.com.cn/
  */
 
+declare (strict_types=1);
+
 namespace Larva\Wallet\Observers;
 
 use Larva\Wallet\Exceptions\WalletException;
@@ -38,7 +40,7 @@ class WithdrawalsObserver
                 'type' => Transaction::TYPE_WITHDRAWAL,
                 'description' => trans('wallet.withdrawal_balance'),
                 'amount' => $change_freeze_amount,
-                'available_amount' => bcadd($withdrawals->wallet->available_amount, $change_freeze_amount),
+                'available_amount' => $withdrawals->wallet->available_amount + $change_freeze_amount,
                 'client_ip' => $withdrawals->client_ip,
             ]);
             $withdrawals->transfer()->create([

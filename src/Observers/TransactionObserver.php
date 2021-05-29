@@ -5,6 +5,8 @@
  * @link http://www.larva.com.cn/
  */
 
+declare (strict_types = 1);
+
 namespace Larva\Wallet\Observers;
 
 use Larva\Wallet\Exceptions\WalletException;
