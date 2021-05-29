@@ -5,6 +5,8 @@
  * @link http://www.larva.com.cn/
  */
 
+declare (strict_types=1);
+
 namespace Larva\Wallet\Models;
 
 use DateTimeInterface;
@@ -107,9 +109,7 @@ class Recharge extends Model
      */
     public function user(): BelongsTo
     {
-        return $this->belongsTo(
-            config('auth.providers.' . config('auth.guards.web.provider') . '.model')
-        );
+        return $this->belongsTo(config('auth.providers.' . config('auth.guards.web.provider') . '.model'));
     }
 
     /**
@@ -143,7 +143,7 @@ class Recharge extends Model
             'type' => Transaction::TYPE_RECHARGE,
             'description' => trans('wallet.wallet_recharge'),
             'amount' => $this->amount,
-            'available_amount' => bcadd($this->wallet->available_amount, $this->amount)
+            'available_amount' => $this->wallet->available_amount + $this->amount
         ]);
         Event::dispatch(new RechargeShipped($this));
         $this->user->notify(new \Larva\Wallet\Notifications\RechargeSucceeded($this->user, $this));

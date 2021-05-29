@@ -5,9 +5,14 @@
  * @link http://www.larva.com.cn/
  */
 
+declare (strict_types=1);
+
 namespace Larva\Wallet\Models;
 
+use DateTimeInterface;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
@@ -76,10 +81,10 @@ class WithdrawalsAccount extends Model
     /**
      * 为数组 / JSON 序列化准备日期。
      *
-     * @param \DateTimeInterface $date
+     * @param DateTimeInterface $date
      * @return string
      */
-    protected function serializeDate(\DateTimeInterface $date)
+    protected function serializeDate(DateTimeInterface $date): string
     {
         return $date->format($this->dateFormat ?: 'Y-m-d H:i:s');
     }
@@ -87,13 +92,11 @@ class WithdrawalsAccount extends Model
     /**
      * Get the user relation.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function user()
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(
-            config('auth.providers.' . config('auth.guards.web.provider') . '.model')
-        );
+        return $this->belongsTo(config('auth.providers.' . config('auth.guards.web.provider') . '.model'));
     }
 
     /**
@@ -125,8 +128,8 @@ class WithdrawalsAccount extends Model
 
     /**
      * 查询支付宝
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param Builder $query
+     * @return Builder
      */
     public function scopeByAlipay($query)
     {
@@ -167,7 +170,7 @@ class WithdrawalsAccount extends Model
      * @param string $type 账户类型，分为两种：b2c：个人,b2b：企业。不传时默认为b2c类型。
      * @param string $accountType 账户类型 ALIPAY_USERID：支付宝账号对应的支付宝唯一用户号，以 2088 开头的 16 位纯数字组成；ALIPAY_LOGONID：支付宝登录号，支持邮箱和手机号格式。
      */
-    public function setAlipayRecipient(string $account, string $name, $type = 'b2c', $accountType = 'ALIPAY_LOGONID')
+    public function setAlipayRecipient(string $account, string $name, string $type = 'b2c', string $accountType = 'ALIPAY_LOGONID')
     {
         $this->channel = static::CHANNEL_ALIPAY;
         $this->recipient = [
@@ -185,7 +188,7 @@ class WithdrawalsAccount extends Model
      * @param string $type 账户类型，分为两种：b2c：个人,b2b：企业。不传时默认为b2c类型。
      * @param boolean $forceCheck 是否强制校验收款人姓名。仅当 name 参数不为空时该参数生效。
      */
-    public function setWechatRecipient(string $account, string $name, $type = 'b2c', $forceCheck = true)
+    public function setWechatRecipient(string $account, string $name, string $type = 'b2c', bool $forceCheck = true)
     {
         $this->channel = static::CHANNEL_WECHAT_WEB;
         $this->recipient = [

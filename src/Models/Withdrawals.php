@@ -5,6 +5,8 @@
  * @link http://www.larva.com.cn/
  */
 
+declare (strict_types=1);
+
 namespace Larva\Wallet\Models;
 
 use DateTimeInterface;
@@ -35,6 +37,8 @@ use Larva\Wallet\Events\WithdrawalsSuccess;
  *
  * @property \Illuminate\Foundation\Auth\User $user
  * @property Wallet $wallet
+ * @property Transaction $transaction
+ * @property Transfer $transfer
  *
  * @author Tongle Xu <xutongle@gmail.com>
  */
@@ -58,7 +62,7 @@ class Withdrawals extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'amount', 'status', 'channel', 'recipient','client_ip',  'metadata', 'canceled_at', 'succeeded_at'
+        'user_id', 'amount', 'status', 'channel', 'recipient', 'client_ip', 'metadata', 'canceled_at', 'succeeded_at'
     ];
 
     /**
@@ -124,9 +128,7 @@ class Withdrawals extends Model
      */
     public function user(): BelongsTo
     {
-        return $this->belongsTo(
-            config('auth.providers.' . config('auth.guards.web.provider') . '.model')
-        );
+        return $this->belongsTo(config('auth.providers.' . config('auth.guards.web.provider') . '.model'));
     }
 
     /**
@@ -160,24 +162,25 @@ class Withdrawals extends Model
     /**
      * 设置提现成功
      */
-    public function setSucceeded()
+    public function setSucceeded(): bool
     {
-        $this->update(['status' => static::STATUS_SUCCEEDED, 'succeeded_at' => $this->freshTimestamp()]);
+        $status = $this->update(['status' => static::STATUS_SUCCEEDED, 'succeeded_at' => $this->freshTimestamp()]);
         Event::dispatch(new WithdrawalsSuccess($this));
+        return $status;
     }
 
     /**
      * 取消提现
      * @return bool
      */
-    public function setCanceled()
+    public function setCanceled(): bool
     {
         $this->transaction()->create([
             'user_id' => $this->user_id,
             'type' => Transaction::TYPE_WITHDRAWAL_REVOKED,
             'description' => trans('wallet.withdrawal_revoked'),
             'amount' => $this->amount,
-            'available_amount' => bcadd($this->wallet->available_amount, $this->amount)
+            'available_amount' => $this->wallet->available_amount + $this->amount
         ]);
         $this->update(['status' => static::STATUS_CANCELED, 'canceled_at' => $this->freshTimestamp()]);
         Event::dispatch(new WithdrawalsCanceled($this));
@@ -188,14 +191,14 @@ class Withdrawals extends Model
      * 提现失败平账
      * @return bool
      */
-    public function setFailed()
+    public function setFailed(): bool
     {
         $this->transaction()->create([
             'user_id' => $this->user_id,
             'type' => Transaction::TYPE_WITHDRAWAL_FAILED,
             'description' => trans('wallet.withdrawal_failed'),
             'amount' => $this->amount,
-            'available_amount' => bcadd($this->wallet->available_amount, $this->amount)
+            'available_amount' => $this->wallet->available_amount + $this->amount
         ]);
         $this->update(['status' => static::STATUS_FAILED, 'canceled_at' => $this->freshTimestamp()]);
         Event::dispatch(new WithdrawalsFailure($this));

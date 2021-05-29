@@ -5,11 +5,14 @@
  * @link http://www.larva.com.cn/
  */
 
+declare (strict_types=1);
+
 namespace Larva\Wallet\Models;
 
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
 
 /**
@@ -86,7 +89,7 @@ class Transaction extends Model
      * 获取所有操作类型
      * @return array
      */
-    public static function getAllType()
+    public static function getAllType(): array
     {
         return [
             static::TYPE_RECHARGE => trans('wallet.' . static::TYPE_RECHARGE),
@@ -124,7 +127,7 @@ class Transaction extends Model
     /**
      * Get the source entity that the Transaction belongs to.
      */
-    public function source()
+    public function source(): MorphTo
     {
         return $this->morphTo();
     }
@@ -136,9 +139,6 @@ class Transaction extends Model
      */
     public function user(): BelongsTo
     {
-        return $this->belongsTo(
-            config('auth.providers.' . config('auth.guards.web.provider') . '.model')
-        );
+        return $this->belongsTo(config('auth.providers.' . config('auth.guards.web.provider') . '.model'));
     }
-
 }
