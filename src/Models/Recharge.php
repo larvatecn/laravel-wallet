@@ -34,9 +34,8 @@ use Larva\Wallet\Events\RechargeShipped;
  * @property Carbon|null $succeeded_at
  *
  * @property Charge $charge
- * @property \Illuminate\Foundation\Auth\User $user
+ * @property \App\Models\User $user
  * @property Transaction $transaction
- * @property Wallet $wallet
  *
  * @author Tongle Xu <xutongle@gmail.com>
  */
@@ -80,7 +79,7 @@ class Recharge extends Model
      * @var array
      */
     protected $attributes = [
-        'status' => 'pending',
+        'status' => self::STATUS_PENDING,
     ];
 
     /**
@@ -92,14 +91,6 @@ class Recharge extends Model
     protected function serializeDate(DateTimeInterface $date): string
     {
         return $date->format($this->dateFormat ?: 'Y-m-d H:i:s');
-    }
-
-    /**
-     * @return BelongsTo
-     */
-    public function wallet(): BelongsTo
-    {
-        return $this->belongsTo(Wallet::class, 'user_id', 'user_id');
     }
 
     /**
@@ -135,7 +126,7 @@ class Recharge extends Model
     /**
      * 设置交易成功
      */
-    public function setSucceeded()
+    public function markSucceeded()
     {
         $this->update(['channel' => $this->charge->channel, 'type' => $this->charge->type, 'status' => static::STATUS_SUCCEEDED, 'succeeded_at' => $this->freshTimestamp()]);
         $this->transaction()->create([
@@ -143,7 +134,7 @@ class Recharge extends Model
             'type' => Transaction::TYPE_RECHARGE,
             'description' => trans('wallet.wallet_recharge'),
             'amount' => $this->amount,
-            'available_amount' => $this->wallet->available_amount + $this->amount
+            'available_amount' => $this->user->available_amount + $this->amount
         ]);
         Event::dispatch(new RechargeShipped($this));
         $this->user->notify(new \Larva\Wallet\Notifications\RechargeSucceeded($this->user, $this));
@@ -152,7 +143,7 @@ class Recharge extends Model
     /**
      * 设置交易失败
      */
-    public function setFailure()
+    public function markFailed()
     {
         $this->update(['status' => static::STATUS_FAILED]);
         Event::dispatch(new RechargeFailure($this));

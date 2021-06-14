@@ -39,7 +39,7 @@ class ChargeShippedListener implements ShouldQueue
     public function handle(ChargeShipped $event)
     {
         if ($event->charge->order instanceof Recharge) {//充值成功
-            $event->charge->order->setSucceeded();
+            $event->charge->order->markSucceeded();
         }
     }
 }

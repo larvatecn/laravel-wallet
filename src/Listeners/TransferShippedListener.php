@@ -39,7 +39,7 @@ class TransferShippedListener implements ShouldQueue
     public function handle(TransferShipped $event)
     {
         if ($event->transfer->order instanceof Withdrawals) {
-            $event->transfer->order->setSucceeded();
+            $event->transfer->order->markSucceeded();
         }
     }
 }

@@ -39,7 +39,7 @@ class ChargeFailureListener implements ShouldQueue
     public function handle(ChargeFailure $event)
     {
         if ($event->charge->order instanceof Recharge) {//充值失败
-            $event->charge->order->setFailure();
+            $event->charge->order->markFailed();
         }
     }
 }

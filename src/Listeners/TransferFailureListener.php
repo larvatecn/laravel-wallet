@@ -39,7 +39,7 @@ class TransferFailureListener implements ShouldQueue
     public function handle(TransferFailure $event)
     {
         if ($event->transfer->order instanceof Withdrawals) {
-            $event->transfer->order->setFailed();
+            $event->transfer->order->markFailed();
         }
     }
 }

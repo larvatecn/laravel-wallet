@@ -11,6 +11,9 @@
     "illuminate/notifications": "^6.0 || ^7.0 || ^8.0",
     "larva/laravel-transaction": "^1.0"
   },
+  "require-dev": {
+    "dcat/laravel-admin": "2.*"
+  },
   "autoload": {
     "psr-4": {
       "Larva\\Wallet\\": "src"
@@ -26,5 +29,6 @@
       ]
     }
   },
+  "minimum-stability": "beta",
   "prefer-stable": true
 }

@@ -9,6 +9,7 @@ declare (strict_types=1);
 
 namespace Larva\Wallet\Observers;
 
+use Illuminate\Support\Facades\DB;
 use Larva\Wallet\Exceptions\WalletException;
 use Larva\Wallet\Models\Transaction;
 use Larva\Wallet\Models\Withdrawals;
@@ -30,19 +31,19 @@ class WithdrawalsObserver
     public function created(Withdrawals $withdrawals)
     {
         //开始事务
-        $dbConnection = $withdrawals::onWriteConnection()->getConnection();
-        $dbConnection->beginTransaction();
+        DB::beginTransaction();
         try {
-            //冻结变动金额，为负数
+            //冻结提现金额
             $change_freeze_amount = -$withdrawals->amount;
             $withdrawals->transaction()->create([
                 'user_id' => $withdrawals->user_id,
                 'type' => Transaction::TYPE_WITHDRAWAL,
                 'description' => trans('wallet.withdrawal_balance'),
                 'amount' => $change_freeze_amount,
-                'available_amount' => $withdrawals->wallet->available_amount + $change_freeze_amount,
+                'available_amount' => $withdrawals->user->available_amount + $change_freeze_amount,
                 'client_ip' => $withdrawals->client_ip,
             ]);
+            //创建转账请求
             $withdrawals->transfer()->create([
                 'amount' => $withdrawals->amount,
                 'currency' => 'CNY',
@@ -52,9 +53,9 @@ class WithdrawalsObserver
                 'recipient_id' => $withdrawals->recipient,
                 'extra' => $withdrawals->extra,
             ]);
-            $dbConnection->commit();
+            DB::commit();
         } catch (\Exception $e) {//回滚事务
-            $dbConnection->rollback();
+            DB::rollback();
             throw new WalletException($e->getMessage(), 500);
         }
     }

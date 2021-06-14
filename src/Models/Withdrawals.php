@@ -35,8 +35,7 @@ use Larva\Wallet\Events\WithdrawalsSuccess;
  * @property Carbon|null $canceled_at
  * @property Carbon|null $succeeded_at
  *
- * @property \Illuminate\Foundation\Auth\User $user
- * @property Wallet $wallet
+ * @property \App\Models\User $user
  * @property Transaction $transaction
  * @property Transfer $transfer
  *
@@ -91,7 +90,7 @@ class Withdrawals extends Model
      * @var array
      */
     protected $attributes = [
-        'status' => 'pending',
+        'status' => self::STATUS_PENDING,
     ];
 
     /**
@@ -132,14 +131,6 @@ class Withdrawals extends Model
     }
 
     /**
-     * @return BelongsTo
-     */
-    public function wallet(): BelongsTo
-    {
-        return $this->belongsTo(Wallet::class, 'user_id', 'user_id');
-    }
-
-    /**
      * Get the entity's transaction.
      *
      * @return morphOne
@@ -162,7 +153,7 @@ class Withdrawals extends Model
     /**
      * 设置提现成功
      */
-    public function setSucceeded(): bool
+    public function markSucceeded(): bool
     {
         $status = $this->update(['status' => static::STATUS_SUCCEEDED, 'succeeded_at' => $this->freshTimestamp()]);
         Event::dispatch(new WithdrawalsSuccess($this));
@@ -173,14 +164,14 @@ class Withdrawals extends Model
      * 取消提现
      * @return bool
      */
-    public function setCanceled(): bool
+    public function markCanceled(): bool
     {
         $this->transaction()->create([
             'user_id' => $this->user_id,
             'type' => Transaction::TYPE_WITHDRAWAL_REVOKED,
             'description' => trans('wallet.withdrawal_revoked'),
             'amount' => $this->amount,
-            'available_amount' => $this->wallet->available_amount + $this->amount
+            'available_amount' => $this->user->available_amount + $this->amount
         ]);
         $this->update(['status' => static::STATUS_CANCELED, 'canceled_at' => $this->freshTimestamp()]);
         Event::dispatch(new WithdrawalsCanceled($this));
@@ -191,14 +182,14 @@ class Withdrawals extends Model
      * 提现失败平账
      * @return bool
      */
-    public function setFailed(): bool
+    public function markFailed(): bool
     {
         $this->transaction()->create([
             'user_id' => $this->user_id,
             'type' => Transaction::TYPE_WITHDRAWAL_FAILED,
             'description' => trans('wallet.withdrawal_failed'),
             'amount' => $this->amount,
-            'available_amount' => $this->wallet->available_amount + $this->amount
+            'available_amount' => $this->user->available_amount + $this->amount
         ]);
         $this->update(['status' => static::STATUS_FAILED, 'canceled_at' => $this->freshTimestamp()]);
         Event::dispatch(new WithdrawalsFailure($this));

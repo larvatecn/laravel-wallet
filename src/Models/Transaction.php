@@ -14,6 +14,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
+use Larva\Wallet\Exceptions\WalletException;
 
 /**
  * 钱包交易明细
@@ -26,9 +28,8 @@ use Illuminate\Support\Carbon;
  * @property string $type
  * @property-read string $typeName
  * @property string $client_ip
- * @property \Illuminate\Foundation\Auth\User $user
+ * @property \App\Models\User $user
  * @property Carbon|null $created_at
- * @property Wallet $wallet
  *
  * @author Tongle Xu <xutongle@gmail.com>
  */
@@ -105,14 +106,6 @@ class Transaction extends Model
             static::TYPE_ROYALTY => trans('wallet.' . static::TYPE_ROYALTY),
             static::TYPE_REWARD => trans('wallet.' . static::TYPE_REWARD),
         ];
-    }
-
-    /**
-     * @return BelongsTo
-     */
-    public function wallet(): BelongsTo
-    {
-        return $this->belongsTo(Wallet::class, 'user_id', 'user_id');
     }
 
     /**

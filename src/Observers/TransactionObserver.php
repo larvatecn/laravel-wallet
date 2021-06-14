@@ -9,9 +9,9 @@ declare (strict_types = 1);
 
 namespace Larva\Wallet\Observers;
 
+use Illuminate\Support\Facades\DB;
 use Larva\Wallet\Exceptions\WalletException;
 use Larva\Wallet\Models\Transaction;
-use Larva\Wallet\Models\Wallet;
 
 /**
  * 交易模型观察者
@@ -30,14 +30,13 @@ class TransactionObserver
     public function created(Transaction $transaction)
     {
         //开始事务
-        $dbConnection = Wallet::onWriteConnection()->getConnection();
-        $dbConnection->beginTransaction();
+        DB::beginTransaction();
         try {
-            $wallet = Wallet::query()->where('user_id', '=', $transaction->user_id)->lockForUpdate()->first();
-            $wallet->update(['available_amount' => $transaction->available_amount]);//更新用户余额
-            $dbConnection->commit();
+            $user = $transaction->user()->lockForUpdate()->first();
+            $user->updateQuietly(['available_amount' => $transaction->available_amount]);
+            DB::commit();
         } catch (\Exception $e) {//回滚事务
-            $dbConnection->rollback();
+            DB::rollback();
             throw new WalletException($e->getMessage(), 500);
         }
     }

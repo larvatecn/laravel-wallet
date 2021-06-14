@@ -39,7 +39,7 @@ class ChargeClosedListener implements ShouldQueue
     public function handle(ChargeClosed $event)
     {
         if ($event->charge->order instanceof Recharge) {//充值关闭
-            $event->charge->order->setFailure();
+            $event->charge->order->markFailed();
         }
     }
 }
