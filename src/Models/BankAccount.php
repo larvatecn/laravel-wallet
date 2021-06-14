@@ -32,7 +32,7 @@ use Illuminate\Support\Carbon;
  *
  * @author Tongle Xu <xutongle@gmail.com>
  */
-class WithdrawalsAccount extends Model
+class BankAccount extends Model
 {
     use SoftDeletes;
 
@@ -48,7 +48,7 @@ class WithdrawalsAccount extends Model
      *
      * @var string
      */
-    protected $table = 'wallet_withdrawals_accounts';
+    protected $table = 'bank_accounts';
 
     /**
      * 可以批量赋值的属性
