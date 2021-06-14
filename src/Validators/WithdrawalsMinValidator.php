@@ -18,6 +18,6 @@ class WithdrawalsMinValidator
      */
     public function validate($attribute, $value, $parameters, $validator): bool
     {
-        return (int)$value > (int)settings('wallet.withdrawals_min');
+        return (int)$value > (int)settings('wallet.withdrawals_min', 100);
     }
 }
