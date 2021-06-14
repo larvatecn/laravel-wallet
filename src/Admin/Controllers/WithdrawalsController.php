@@ -50,7 +50,9 @@ class WithdrawalsController extends AdminController
             $grid->column('id', 'ID')->sortable();
             $grid->column('user_id', '用户ID');
             $grid->column('channel', '提现渠道');
-            $grid->column('amount', '提现金额');
+            $grid->column('amount', '提现金额')->display(function ($amount) {
+                return ($amount / 100) . '元';
+            });
             $grid->column('status', '状态')->using(Withdrawals::getStatusLabels())->dot(Withdrawals::getStatusDots(), 'info');
             $grid->column('client_ip', '客户端IP');
             $grid->column('succeeded_at', '成功时间');

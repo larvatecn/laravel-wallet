@@ -46,8 +46,12 @@ class TransactionController extends AdminController
             $grid->column('id', '流水号');
             $grid->column('user_id', '用户ID');
 
-            $grid->column('amount', '交易金额');
-            $grid->column('current_amount', '交易后金额');
+            $grid->column('amount', '交易金额')->display(function ($amount) {
+                return ($amount / 100) . '元';
+            });
+            $grid->column('current_amount', '交易后金额')->display(function ($current_amount) {
+                return ($current_amount / 100) . '元';
+            });
             $grid->column('description', '描述');
             $grid->column('type', '交易类型')->using(Transaction::getAllType());
             $grid->column('client_ip', '客户端IP');

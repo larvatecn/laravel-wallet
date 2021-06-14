@@ -25,7 +25,7 @@ class Wallet
      * @param string|null $clientIP 客户端IP
      * @return Recharge
      */
-    public function recharge($user_id, string $channel, int $amount, string $type, string $clientIP = null): Recharge
+    public static function recharge($user_id, string $channel, int $amount, string $type, string $clientIP = null): Recharge
     {
         return Recharge::create(['user_id' => $user_id, 'channel' => $channel, 'amount' => $amount, 'type' => $type, 'client_ip' => $clientIP]);
     }
