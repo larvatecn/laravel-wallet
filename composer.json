@@ -9,6 +9,7 @@
     "ext-bcmath": "*",
     "illuminate/support": "^6.0 || ^7.0 || ^8.0",
     "illuminate/notifications": "^6.0 || ^7.0 || ^8.0",
+    "larva/laravel-settings": "^1.0",
     "larva/laravel-transaction": "^1.0"
   },
   "require-dev": {

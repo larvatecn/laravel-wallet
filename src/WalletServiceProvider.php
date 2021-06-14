@@ -11,6 +11,7 @@ namespace Larva\Wallet;
 
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Validator;
 
 /**
  * 钱包服务提供者
@@ -45,6 +46,9 @@ class WalletServiceProvider  extends ServiceProvider
         \Larva\Wallet\Models\Recharge::observe(\Larva\Wallet\Observers\RechargeObserver::class);
         \Larva\Wallet\Models\Transaction::observe(\Larva\Wallet\Observers\TransactionObserver::class);
         \Larva\Wallet\Models\Withdrawals::observe(\Larva\Wallet\Observers\WithdrawalsObserver::class);
+
+        //注册验证规则
+        Validator::extend('withdrawals_min', "\Larva\Wallet\Validators\WithdrawalsMinValidator@validate");
     }
 
     /**
