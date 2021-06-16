@@ -20,15 +20,15 @@ use Illuminate\Support\Carbon;
  * 账户表
  * @property int $id ID序号
  * @property int $user_id 用户ID
- * @property string $channel 结算账号渠道名称
- * @property-read string $account 结算账号
- * @property-read string $name 结算账号开户名
- * @property-read string $type 结算账号类型
- * @property array $recipient 脱敏的结算账号接收者信息
+ * @property string $channel 账号渠道名称
+ * @property-read string $account 账号
+ * @property-read string $name 账号开户名
+ * @property-read string $type 账号类型
+ * @property array $recipient 脱敏的账号接收者信息
  * @property Carbon $created_at
  * @property Carbon $updated_at
  *
- * @property \Illuminate\Foundation\Auth\User $user
+ * @property \App\Models\User $user
  *
  * @author Tongle Xu <xutongle@gmail.com>
  */
