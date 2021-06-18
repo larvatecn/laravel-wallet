@@ -29,7 +29,7 @@ use Larva\Wallet\Events\WithdrawalsSuccess;
  * @property string $channel 渠道
  * @property string $recipient 支付凭证
  * @property string $client_ip 客户端IP
- * @property array $metadata
+ * @property array $metadata 元数据
  * @property-read array $extra 提现附加参数
  * @property Carbon|null $created_at
  * @property Carbon|null $canceled_at

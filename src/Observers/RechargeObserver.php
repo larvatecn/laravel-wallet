@@ -33,7 +33,7 @@ class RechargeObserver
             'subject' => trans('wallet.Wallet_recharge'),
             'body' => trans('wallet.Wallet_recharge'),
             'client_ip' => $recharge->client_ip,
-            'type' => $recharge->type,//交易类型
+            'trade_type' => $recharge->trade_type,//交易类型
         ]);
     }
 }

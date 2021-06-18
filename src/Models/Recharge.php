@@ -22,16 +22,16 @@ use Larva\Wallet\Events\RechargeShipped;
 /**
  * 钱包充值明细
  *
- * @property int $id
- * @property int $user_id
- * @property int $amount
- * @property string $channel
- * @property string $type
- * @property string $status
- * @property string $client_ip
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- * @property Carbon|null $succeeded_at
+ * @property int $id ID
+ * @property int $user_id 用户ID
+ * @property int $amount 充值金额，单位分
+ * @property string $channel 支付渠道
+ * @property string $trade_type 支付类型
+ * @property string $status 状态
+ * @property string $client_ip 客户端IP
+ * @property Carbon $created_at 创建时间
+ * @property Carbon|null $updated_at 更新时间
+ * @property Carbon|null $succeeded_at 成功时间
  *
  * @property Charge $charge
  * @property \App\Models\User $user
@@ -59,7 +59,7 @@ class Recharge extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'amount', 'channel', 'type', 'status', 'client_ip', 'succeeded_at'
+        'user_id', 'amount', 'channel', 'trade_type', 'status', 'client_ip', 'succeeded_at'
     ];
 
     /**
@@ -128,7 +128,7 @@ class Recharge extends Model
      */
     public function markSucceeded()
     {
-        $this->update(['channel' => $this->charge->channel, 'type' => $this->charge->type, 'status' => static::STATUS_SUCCEEDED, 'succeeded_at' => $this->freshTimestamp()]);
+        $this->update(['channel' => $this->charge->channel, 'trade_type' => $this->charge->trade_type, 'status' => static::STATUS_SUCCEEDED, 'succeeded_at' => $this->freshTimestamp()]);
         $this->transaction()->create([
             'user_id' => $this->user_id,
             'type' => Transaction::TYPE_RECHARGE,

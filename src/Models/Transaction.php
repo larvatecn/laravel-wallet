@@ -14,22 +14,20 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
-use Larva\Wallet\Exceptions\WalletException;
 
 /**
  * 钱包交易明细
  *
- * @property string $id
- * @property int $user_id
- * @property int $amount
+ * @property string $id ID
+ * @property int $user_id 用户ID
+ * @property int $amount 交易金额
  * @property int $available_amount 交易后可用金额
- * @property string $description
- * @property string $type
+ * @property string $description 描述
+ * @property string $type 类型
  * @property-read string $typeName
- * @property string $client_ip
+ * @property string $client_ip 客户端IP
  * @property \App\Models\User $user
- * @property Carbon|null $created_at
+ * @property Carbon|null $created_at 交易时间
  *
  * @author Tongle Xu <xutongle@gmail.com>
  */

@@ -17,7 +17,7 @@ class CreateWalletRechargesTable extends Migration
             $table->increments('id')->comment('充值 id');
             $table->unsignedBigInteger('user_id')->comment('用户 id');
             $table->string('channel', 10)->comment('充值渠道名称');
-            $table->string('type', 10)->comment('充值渠道类型');
+            $table->string('trade_type', 10)->comment('充值渠道类型');
             $table->unsignedInteger('amount')->default(0)->comment('充值金额');//单位分
             $table->ipAddress('client_ip')->nullable()->comment('用户IP');//发起支付请求客户端的 IP 地址
             $table->string('status', 10)->default(\Larva\Wallet\Models\Recharge::STATUS_PENDING)->comment('状态');

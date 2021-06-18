@@ -25,8 +25,8 @@ use Illuminate\Support\Carbon;
  * @property-read string $name 账号开户名
  * @property-read string $type 账号类型
  * @property array $recipient 脱敏的账号接收者信息
- * @property Carbon $created_at
- * @property Carbon $updated_at
+ * @property Carbon $created_at 创建时间
+ * @property Carbon $updated_at 更新时间
  *
  * @property \App\Models\User $user
  *
