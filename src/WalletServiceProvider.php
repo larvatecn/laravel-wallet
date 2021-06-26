@@ -37,9 +37,9 @@ class WalletServiceProvider  extends ServiceProvider
 
         // Transaction
         Event::listen(\Larva\Transaction\Events\ChargeClosed::class, \Larva\Wallet\Listeners\ChargeClosedListener::class);//支付关闭
-        Event::listen(\Larva\Transaction\Events\ChargeFailure::class, \Larva\Wallet\Listeners\ChargeFailureListener::class);//支付失败
+        Event::listen(\Larva\Transaction\Events\ChargeFailed::class, \Larva\Wallet\Listeners\ChargeFailedListener::class);//支付失败
         Event::listen(\Larva\Transaction\Events\ChargeShipped::class, \Larva\Wallet\Listeners\ChargeShippedListener::class);//支付成功
-        Event::listen(\Larva\Transaction\Events\TransferFailure::class, \Larva\Wallet\Listeners\TransferFailureListener::class);//提现失败
+        Event::listen(\Larva\Transaction\Events\TransferFailed::class, \Larva\Wallet\Listeners\TransferFailedListener::class);//提现失败
         Event::listen(\Larva\Transaction\Events\TransferShipped::class, \Larva\Wallet\Listeners\TransferShippedListener::class);//提现成功
 
         // Observers

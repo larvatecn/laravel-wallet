@@ -33,9 +33,9 @@ use Larva\Wallet\Events\RechargeShipped;
  * @property Carbon|null $updated_at 更新时间
  * @property Carbon|null $succeeded_at 成功时间
  *
- * @property Charge $charge
+ * @property Charge $charge 收单模型
  * @property \App\Models\User $user
- * @property Transaction $transaction
+ * @property Transaction $transaction 交易模型
  *
  * @author Tongle Xu <xutongle@gmail.com>
  */

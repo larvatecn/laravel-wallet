@@ -31,9 +31,9 @@ use Larva\Wallet\Events\WithdrawalsSuccess;
  * @property string $client_ip 客户端IP
  * @property array $metadata 元数据
  * @property-read array $extra 提现附加参数
- * @property Carbon|null $created_at
- * @property Carbon|null $canceled_at
- * @property Carbon|null $succeeded_at
+ * @property Carbon|null $created_at 创建时间
+ * @property Carbon|null $canceled_at 取消时间
+ * @property Carbon|null $succeeded_at 处理成功时间
  *
  * @property \App\Models\User $user
  * @property Transaction $transaction

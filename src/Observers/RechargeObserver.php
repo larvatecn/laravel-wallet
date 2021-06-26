@@ -29,10 +29,10 @@ class RechargeObserver
         $recharge->charge()->create([
             'user_id' => $recharge->user_id,
             'amount' => $recharge->amount,
-            'channel' => $recharge->channel,
             'subject' => trans('wallet.Wallet_recharge'),
-            'body' => trans('wallet.Wallet_recharge'),
+            'description' => trans('wallet.Wallet_recharge'),
             'client_ip' => $recharge->client_ip,
+            'trade_channel' => $recharge->channel,
             'trade_type' => $recharge->trade_type,//交易类型
         ]);
     }

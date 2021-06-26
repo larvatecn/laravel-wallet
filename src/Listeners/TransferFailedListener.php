@@ -10,15 +10,15 @@ declare (strict_types = 1);
 namespace Larva\Wallet\Listeners;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Larva\Wallet\Models\Recharge;
-use Larva\Transaction\Events\ChargeFailure;
+use Larva\Wallet\Models\Withdrawals;
+use Larva\Transaction\Events\TransferFailed;
 
 /**
- * 付款失败事件
+ * 提现失败事件
  *
  * @author Tongle Xu <xutongle@gmail.com>
  */
-class ChargeFailureListener implements ShouldQueue
+class TransferFailedListener implements ShouldQueue
 {
     /**
      * Create the event listener.
@@ -33,13 +33,13 @@ class ChargeFailureListener implements ShouldQueue
     /**
      * Handle the event.
      *
-     * @param ChargeFailure $event
+     * @param TransferFailed $event
      * @return void
      */
-    public function handle(ChargeFailure $event)
+    public function handle(TransferFailed $event)
     {
-        if ($event->charge->order instanceof Recharge) {//充值失败
-            $event->charge->order->markFailed();
+        if ($event->transfer->order instanceof Withdrawals) {
+            $event->transfer->order->markFailed();
         }
     }
 }
